@@ -1,2 +1,1 @@
 # practice
-## js/ts/css

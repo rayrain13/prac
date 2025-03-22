@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            text-align: left;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .login-container button:hover {
+            background-color: #218838;
+        }
+        .login-container .register-link {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .login-container .register-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .login-container .register-link a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>登录</h2>
+        <form id="loginForm">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+            <label for="username">用户名：</label>
+            <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+            <label for="password">密码：</label>
+            <input type="password" id="password" name="password" placeholder="请输入密码" required>
+            <label>
+                <input type="checkbox" id="rememberMe"> 记住我
+            </label>
+            <button type="submit">登录</button>
+        </form>
+        <div class="register-link">
+            还没有账号？<a href="./注册.html">立即注册</a>
+        </div>
+    </div>
+
+    <!-- 引入 axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // 页面加载时检查是否有保存的用户名和密码
+        window.addEventListener('load', () => {
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            const username = localStorage.getItem('username');
+            const password = localStorage.getItem('password');
+
+            if (rememberMe && username && password) {
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+                document.getElementById('rememberMe').checked = true;
+            }
+        });
+
+        // 登录表单提交逻辑
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            // 获取输入值
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            // 清空之前的消息
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            // 简单前端验证
+            if (!username || !password) {
+                errorMessage.textContent = '用户名和密码不能为空！';
+                return;
+            }
+
+            try {
+                // 使用 axios 发送登录请求到后端
+                const response = await axios.post('/api/login', {
+                    username,
+                    password,
+                });
+
+                // 处理后端返回的结果
+                if (response.data.success) {
+                    successMessage.textContent = response.data.message || '登录成功！';
+
+                    // 如果用户勾选了“记住我”，保存用户名和密码
+                    if (rememberMe) {
+                        localStorage.setItem('username', username);
+                        localStorage.setItem('password', password);
+                        localStorage.setItem('rememberMe', true);
+                    } else {
+                        // 如果未勾选，清除保存的数据
+                        localStorage.removeItem('username');
+                        localStorage.removeItem('password');
+                        localStorage.removeItem('rememberMe');
+                    }
+
+                    // 登录成功后跳转到其他页面
+                    window.location.href = './首页.html';
+                } else {
+                    errorMessage.textContent = response.data.message || '用户名或密码错误！';
+                }
+            } catch (error) {
+                console.error('登录请求失败：', error);
+                errorMessage.textContent = '登录请求失败，请稍后重试！';
+            }
+        });
+    </script>
+</body>
+</html>
