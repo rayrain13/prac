@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="container">
+        <p>existing dom</p>
+    </div>
+
+    <div id="box">
+        <p id="text">Original Text</p>
+    </div>
+    <button id="myButton">Click me</button>
+    <ul id="myList">
+        <li>Item1</li>
+        <li>Item2</li>
+        <li>Item3</li>
+    </ul>
+
+    <form id="myForm">
+        <input type="text" id="myInput" value="initial value">
+        <input type="checkbox" id="myCheckbox">
+        <select id="mySelect">
+            <option value="option1"></option>
+            <option value="option2"></option>
+        </select>
+    </form>
+</body>
+</html>
+
+<script>
+    const newDom = document.createElement('p');
+    newDom.textContent = 'This is a new Dom';
+    const parent = document.getElementById('container');
+    parent.appendChild(newDom);
+
+    // 修改元素的文本内容
+const textElement = document.getElementById('text');
+textElement.textContent = 'Updated Text';
+
+// 修改元素的HTML内容
+textElement.innerHTML = '<strong>Bold Text</strong>';
+
+// 修改元素的样式
+textElement.style.color = 'red';
+textElement.style.fontSize = '20px';
+
+
+// 事件处理
+const button = document.getElementById('myButton');
+button.addEventListener('click',function(){
+    alert('button clicked');
+})
+
+const list = document.getElementById('myList',function(event){
+    if(event.target.tagName==='LI'){
+        alert('Clicked on:'+ event.target.tagName);
+    }
+})
+
+
+// 操作表单元素
+const input = document.getElementById('input');
+console.log(input.value);
+
+input.value = 'new value';
+const checkbox = document.getElementById('myCheckbox');
+console.log(checkbox.checked);
+checkbox.checked = true;
+const select = document.getElementById('mySelect');
+console.log(select.value);
+select.value='option2';
+
+</script>
