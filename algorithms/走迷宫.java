@@ -1,4 +1,4 @@
-public import java.util.*;
+import java.util.*;
 
 public class Main {
     // 四个方向：下、上、右、左
@@ -67,6 +67,6 @@ public class Main {
         
         sc.close();
     }
-} {
+
     
 }
